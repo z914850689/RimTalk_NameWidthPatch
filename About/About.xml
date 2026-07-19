@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ModMetaData>
+  <name>RimTalk Name Width Patch</name>
+  <author>Custom</author>
+  <supportedVersions>
+    <li>1.5</li>
+    <li>1.6</li>
+  </supportedVersions>
+  <description>限制RimTalk对话窗口中名字列的宽度，防止长名字挤占对话显示空间。</description>
+  <packageId>Custom.RimTalkNameWidthPatch</packageId>
+  <loadAfter>
+    <li>cj.rimtalk</li>
+  </loadAfter>
+</ModMetaData>

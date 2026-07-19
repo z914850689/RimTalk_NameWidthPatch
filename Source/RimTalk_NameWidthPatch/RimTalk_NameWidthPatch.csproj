@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net48</TargetFramework>
+    <LangVersion>12</LangVersion>
+    <AssemblyName>RimTalk_NameWidthPatch</AssemblyName>
+    <RootNamespace>RimTalk_NameWidthPatch</RootNamespace>
+    <OutputType>Library</OutputType>
+    <PlatformTarget>x64</PlatformTarget>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="0Harmony" HintPath="E:\SteamLibrary\steamapps\workshop\content\294100\2009463077\1.5\Assemblies\0Harmony.dll" />
+    <Reference Include="Assembly-CSharp" HintPath="E:\SteamLibrary\steamapps\common\RimWorld\RimWorldWin64_Data\Managed\Assembly-CSharp.dll" />
+    <Reference Include="UnityEngine.CoreModule" HintPath="E:\SteamLibrary\steamapps\common\RimWorld\RimWorldWin64_Data\Managed\UnityEngine.CoreModule.dll" />
+    <Reference Include="UnityEngine.TextRenderingModule" HintPath="E:\SteamLibrary\steamapps\common\RimWorld\RimWorldWin64_Data\Managed\UnityEngine.TextRenderingModule.dll" />
+    <Reference Include="RimTalk" HintPath="E:\SteamLibrary\steamapps\workshop\content\294100\3551203752\1.6\Assemblies\RimTalk.dll" />
+  </ItemGroup>
+</Project>

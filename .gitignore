@@ -1,0 +1,22 @@
+# Build intermediate files
+bin/
+obj/
+*.pdb
+
+# Visual Studio
+.vs/
+*.suo
+*.user
+*.sln.docstates
+
+# NuGet
+*.nupkg
+**/[Pp]ackages/*
+!**/[Pp]ackages/build/
+*.nuget.props
+*.nuget.targets
+
+# OS files
+Thumbs.db
+Desktop.ini
+.DS_Store
