@@ -8,20 +8,12 @@ using Verse;
 
 namespace RimTalk_NameWidthPatch
 {
-    public enum PatchMode
-    {
-        WidthLimit = 0,   // 模式1: 限制名字列最大宽度
-        NoWrapName = 1    // 模式2: 名字不换行+宽度自适应
-    }
-
     public class NameWidthSettings : ModSettings
     {
-        public PatchMode mode = PatchMode.WidthLimit;
         public float maxNameWidth = 120f;
         public override void ExposeData()
         {
             base.ExposeData();
-            Scribe_Values.Look(ref mode, "mode", PatchMode.WidthLimit);
             Scribe_Values.Look(ref maxNameWidth, "maxNameWidth", 120f);
         }
     }
@@ -30,14 +22,12 @@ namespace RimTalk_NameWidthPatch
     {
         public static NameWidthSettings settings;
         public static float runtimeMaxWidth = 120f;
-        public static PatchMode runtimeMode = PatchMode.WidthLimit;
         [ThreadStatic] private static bool _isInDrawMessageLog = false;
 
         public NameWidthMod(ModContentPack content) : base(content)
         {
             settings = GetSettings<NameWidthSettings>();
             runtimeMaxWidth = settings.maxNameWidth;
-            runtimeMode = settings.mode;
             ApplyPatch();
         }
 
@@ -48,38 +38,13 @@ namespace RimTalk_NameWidthPatch
             Listing_Standard list = new Listing_Standard();
             list.Begin(inRect);
 
-            // 模式选择
-            if (list.ButtonText(runtimeMode == PatchMode.WidthLimit ? "当前: 限制宽度模式" : "当前: 不限制宽度模式"))
-            {
-                var floatMenu = new FloatMenu(new List<FloatMenuOption>
-                {
-                    new FloatMenuOption("模式1: 限制名字列最大宽度", () => {
-                        settings.mode = PatchMode.WidthLimit;
-                        runtimeMode = PatchMode.WidthLimit;
-                    }),
-                    new FloatMenuOption("模式2: 不限制宽度（RimTalk默认）", () => {
-                        settings.mode = PatchMode.NoWrapName;
-                        runtimeMode = PatchMode.NoWrapName;
-                    })
-                });
-                Find.WindowStack.Add(floatMenu);
-            }
+            settings.maxNameWidth = Mathf.RoundToInt(list.SliderLabeled(
+                "名字列最大宽度: " + Mathf.RoundToInt(settings.maxNameWidth) + "px",
+                settings.maxNameWidth, 40f, 800f));
+            runtimeMaxWidth = settings.maxNameWidth;
 
             list.Gap(10f);
-
-            // 模式1 的宽度滑块
-            if (runtimeMode == PatchMode.WidthLimit)
-            {
-                settings.maxNameWidth = Mathf.RoundToInt(list.SliderLabeled(
-                    "名字列最大宽度: " + Mathf.RoundToInt(settings.maxNameWidth) + "px",
-                    settings.maxNameWidth, 40f, 800f));
-                runtimeMaxWidth = settings.maxNameWidth;
-            }
-
-            list.Gap(10f);
-            list.Label(runtimeMode == PatchMode.WidthLimit
-                ? "超过设定宽度的名字会被截断，对话区获得更多空间"
-                : "不限制名字宽度，保持 RimTalk 默认行为");
+            list.Label("超过设定宽度的名字会被截断，防止字体变化时换行显示不全");
 
             list.End();
             settings.Write();
@@ -132,33 +97,25 @@ namespace RimTalk_NameWidthPatch
                 Log.Message("[NameWidthPatch] Verse.Text.CalcSize 已打补丁");
             }
 
-            Log.Message("[NameWidthPatch] 补丁完成! 当前模式: " + runtimeMode);
+            Log.Message("[NameWidthPatch] 补丁完成!");
         }
 
         public static void Prefix_DrawMessageLog()
         {
-            if (runtimeMode == PatchMode.WidthLimit)
-            {
-                _isInDrawMessageLog = true;
-            }
-            // 模式2: 不做任何干预，保持 RimTalk 默认行为
+            _isInDrawMessageLog = true;
         }
 
         public static void Postfix_DrawMessageLog()
         {
-            if (runtimeMode == PatchMode.WidthLimit)
-            {
-                _isInDrawMessageLog = false;
-            }
+            _isInDrawMessageLog = false;
         }
 
         public static void Postfix_CalcSize(ref Vector2 __result)
         {
-            if (runtimeMode == PatchMode.WidthLimit && _isInDrawMessageLog && __result.x > runtimeMaxWidth)
+            if (_isInDrawMessageLog && __result.x > runtimeMaxWidth)
             {
                 __result.x = runtimeMaxWidth;
             }
-            // 模式2: 宽度自适应，不做限制
         }
     }
 }
