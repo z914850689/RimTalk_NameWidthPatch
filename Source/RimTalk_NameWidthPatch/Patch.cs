@@ -38,9 +38,23 @@ namespace RimTalk_NameWidthPatch
             Listing_Standard list = new Listing_Standard();
             list.Begin(inRect);
 
-            settings.maxNameWidth = Mathf.RoundToInt(list.SliderLabeled(
-                "名字列最大宽度: " + Mathf.RoundToInt(settings.maxNameWidth) + "px",
-                settings.maxNameWidth, 40f, 800f));
+            // 滑块行
+            Rect sliderRow = list.GetRect(24f);
+            float labelWidth = Text.CalcSize("名字列最大宽度:").x + 4f;
+            float inputWidth = 60f;
+            Rect labelRect = new Rect(sliderRow.x, sliderRow.y, labelWidth, sliderRow.height);
+            Rect inputRect = new Rect(sliderRow.xMax - inputWidth, sliderRow.y, inputWidth, sliderRow.height);
+            Rect sliderRect = new Rect(labelRect.xMax, sliderRow.y, sliderRow.width - labelWidth - inputWidth - 4f, sliderRow.height);
+
+            Widgets.Label(labelRect, "名字列最大宽度:");
+            settings.maxNameWidth = Widgets.HorizontalSlider(sliderRect, settings.maxNameWidth, 40f, 800f, false);
+            
+            // 输入框
+            int intVal = Mathf.RoundToInt(settings.maxNameWidth);
+            string buffer = intVal.ToString();
+            Widgets.TextFieldNumeric(inputRect, ref intVal, ref buffer, 40, 800);
+            settings.maxNameWidth = intVal;
+
             runtimeMaxWidth = settings.maxNameWidth;
 
             list.Gap(10f);
